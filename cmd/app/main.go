@@ -8,6 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type calculatePayload struct {
+	Num1 int `json:"num1"`
+	Num2 int `json:"num2"`
+}
+
 func main() {
 	router := gin.Default()
 	router.GET("/", func(c *gin.Context) {
@@ -17,6 +22,16 @@ func main() {
 			return
 		}
 		c.Data(http.StatusOK, "text/html; charset=utf-8", data)
+	})
+
+	router.POST("/calculate", func(c *gin.Context) {
+		var payload calculatePayload
+		if err := c.ShouldBindJSON(&payload); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		log.Printf("%v, %v", payload.Num1, payload.Num2)
+		c.JSON(http.StatusOK, gin.H{"result": payload.Num1 + payload.Num2})
 	})
 
 
