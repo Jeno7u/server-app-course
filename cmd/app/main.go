@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	user "github.com/Jeno7u/server-app-course/internal/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,6 +33,11 @@ func main() {
 		}
 		log.Printf("%v, %v", payload.Num1, payload.Num2)
 		c.JSON(http.StatusOK, gin.H{"result": payload.Num1 + payload.Num2})
+	})
+
+	router.GET("/users", func(c *gin.Context) {
+		user := user.User{Id: 1, Name: "Mironov Boris"}
+		c.JSON(http.StatusOK, user)
 	})
 
 
