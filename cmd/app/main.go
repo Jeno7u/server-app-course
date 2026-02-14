@@ -36,7 +36,22 @@ func main() {
 	})
 
 	router.GET("/users", func(c *gin.Context) {
-		user := user.User{Id: 1, Name: "Mironov Boris"}
+		user := user.UsersResponse{Id: 1, Name: "Mironov Boris"}
+		c.JSON(http.StatusOK, user)
+	})
+
+	router.POST("/user", func(c *gin.Context) {
+		var payload user.UserPayload
+		if err := c.ShouldBindJSON(&payload); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		user := user.UserResponse{
+			Name: payload.Name,
+			Age: payload.Age,
+			IsAdult: payload.Age >= 18,
+		}	
 		c.JSON(http.StatusOK, user)
 	})
 
