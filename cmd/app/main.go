@@ -6,6 +6,7 @@ import (
 	"os"
 
 	models "github.com/Jeno7u/server-app-course/internal/models"
+	validation "github.com/Jeno7u/server-app-course/internal/validation"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,6 +19,8 @@ var feedbacks []models.Feedback
 
 func main() {
 	router := gin.Default()
+	validation.RegisterValidators()
+
 	router.GET("/", func(c *gin.Context) {
 		data, err := os.ReadFile("internal/src/index.html")
 		if err != nil {
