@@ -53,10 +53,10 @@ func main() {
 		}
 
 		user := models.UserResponse{
-			Name: payload.Name,
-			Age: payload.Age,
+			Name:    payload.Name,
+			Age:     payload.Age,
 			IsAdult: payload.Age >= 18,
-		}	
+		}
 		c.JSON(http.StatusOK, user)
 	})
 
@@ -71,6 +71,15 @@ func main() {
 		c.JSON(http.StatusAccepted, gin.H{"message": "Feedback received. Thank you, " + payload.Name})
 	})
 
+	router.POST("/create_user", func(c *gin.Context) {
+		var payload models.UserCreateRequest
+		if err := c.ShouldBindJSON(&payload); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, payload)
+	})
 
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)
