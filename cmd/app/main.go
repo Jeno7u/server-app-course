@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 
 	models "github.com/Jeno7u/server-app-course/internal/models"
 	validation "github.com/Jeno7u/server-app-course/internal/validation"
@@ -79,6 +81,87 @@ func main() {
 		}
 
 		c.JSON(http.StatusOK, payload)
+	})
+
+	products := []models.Product{
+		{
+			ProductID: 123,
+			Name:      "Smartphone",
+			Category:  "Electronics",
+			Price:     599.99,
+		},
+		{
+			ProductID: 456,
+			Name:      "Phone Case",
+			Category:  "Accessories",
+			Price:     19.99,
+		},
+		{
+			ProductID: 789,
+			Name:      "Iphone",
+			Category:  "Electronics",
+			Price:     1299.99,
+		},
+		{
+			ProductID: 101,
+			Name:      "Headphones",
+			Category:  "Accessories",
+			Price:     99.99,
+		},
+		{
+			ProductID: 202,
+			Name:      "Smartwatch",
+			Category:  "Electronics",
+			Price:     299.99,
+		},
+	}
+
+	router.GET("/product/:productID", func(c *gin.Context) {
+		productID, err := strconv.Atoi(c.Param("productID"))
+		if err != nil {
+			log.Println("Ошибка при получении productID из path: ", err.Error())
+			c.Status(http.StatusBadRequest)
+			return
+		}
+
+		for i := range products {
+			if products[i].ProductID == productID {
+				c.JSON(http.StatusOK, products[i])
+			}
+		}
+
+		c.Status(http.StatusNotFound)
+	})
+
+	router.GET("/products/search", func(c *gin.Context) {
+		keyword := c.Query("keyword")
+		if keyword == "" {
+			log.Println("keyword is empty in /products/search")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+
+		category := c.Query("category")
+		limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
+		if err != nil {
+			log.Println("Ошибка при получении productID из path: ", err.Error())
+			c.Status(http.StatusBadRequest)
+			return
+		}
+
+		filtered := products
+		for _, p := range products {
+			if (strings.Contains(strings.ToLower(p.Name), strings.ToLower(keyword))) && (category != "" && p.Category == category) {
+				filtered = append(filtered, p)
+
+				limit--
+				if limit <= 0 {
+					break
+				}
+			}
+		}
+
+		c.JSON(http.StatusOK, filtered)
 	})
 
 	if err := router.Run(":8080"); err != nil {
