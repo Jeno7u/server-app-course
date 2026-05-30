@@ -1,4 +1,4 @@
-package model
+package models
 
 type UserCreateRequest struct {
 	Name         string `json:"name" binding:"required"`
@@ -21,4 +21,9 @@ type UserResponse struct {
 	Name    string `json:"name"`
 	Age     int    `json:"age"`
 	IsAdult bool   `json:"is_adult"`
+}
+
+type User struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }

@@ -1,58 +1,44 @@
-## This project is result of test 1 in server app development course.
+# Server App Course API
 
-## Project structure
+Данный проект реализует серверное приложение с использованием языка Go и фреймворка Gin. Здесь выполняются все 5 контрольных работ.
 
-    cmd/app/main.go - entrypoint, router creation
-    internal/
-        models/
-            feedback.go
-            user.go
-        src/
-            index.html
-        validation/ - custom validator		
-            validation.go
-	
----
-## Run local
+## Как запустить приложение
 
-```
-go run cmd/app/main.go
-```
----
-## Endpoints
-
-`GET /` - returns index.html
-
-`POST /calculate` - takes payload in format below and returns sum
-```
-{
-	"num1": int
-	"num2": int
-}
+### Локально:
+Сначала установите все зависимости:
+```sh
+go mod download
 ```
 
-`GET /users` - returns JSON below
-```
-{
-	"id": 1
-	"name": "Mironov Boris"
-}
+Затем запустите приложение (аналог `uvicorn ... --reload`):
+```sh
+go run ./cmd/app/...
 ```
 
-`POST /user` - takes payload in format below and returns same payload with extra field "is_adult". "is_adult" is true if age >= 18 else false
-```
-{
-	"name": str
-	"age": int
-}
+Приложение будет запущено на порту `:8080`.
+
+### Тестирование (аналог `pytest`):
+Для прогона интеграционных и Unit-тестов выполните команду:
+```sh
+go test ./tests/... -v
+go test ./internal/handlers/... -v
 ```
 
-`POST /feedback` - takes payload in format below, validates it, adds it to list of feedbacks and returns {"message": "Feedback received. Thank you, {payload.name}"}
-
+### Запуск в Docker:
+```sh
+docker compose up --build
 ```
-{
-	"name": str
-	"message": str
-}
+Для проверки статуса контейнера можно использовать:
+```sh
+curl http://localhost:8080/health
 ```
 
+## Требования:
+- Docker и Docker Compose
+- Установленный Go >= 1.25
+
+*В 5-й контрольной работе реализовано:* 
+- Интеграционные тесты для API задач (Tasks)
+- Docker-контейнеризация 
+- WebSockets-комнаты для обмена сообщениями 
+- Зависимости (Middleware для вымышленной авторизации ролей) и маршутизация (`internal/routers`)

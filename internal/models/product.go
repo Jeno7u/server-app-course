@@ -1,4 +1,4 @@
-package model
+package models
 
 type Product struct {
 	ProductID int     `json:"product_id" binding:"required"`

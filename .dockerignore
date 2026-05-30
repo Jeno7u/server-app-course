@@ -1,0 +1,5 @@
+.git
+.vscode
+app.db
+app.db-journal
+tests/
